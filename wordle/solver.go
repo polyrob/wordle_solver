@@ -21,7 +21,8 @@ func NewSolver(game *Game) Solver {
 }
 
 func (s *Solver) Solve() (string, int, error) {
-	words := s.game.dictionary
+	words := make([]string, len(s.game.dictionary))
+	copy(words, s.game.dictionary)
 	for {
 		guess := s.getGuess(words)
 		s.guessCounter++
@@ -77,7 +78,8 @@ func (s *Solver) reduceWords(guess string, result []int, words []string) []strin
 			words = words[:k]
 		} else if code == OUT_OF_POSITION {
 			for _, v := range words {
-				if strings.ContainsRune(v, rune(guess[pos])) {
+				// must have this rune BUT not in the same location
+				if strings.ContainsRune(v, rune(guess[pos])) && v[pos] != guess[pos] {
 					words[k] = v
 					k++
 				}

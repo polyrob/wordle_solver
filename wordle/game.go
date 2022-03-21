@@ -26,16 +26,18 @@ type Game struct {
 
 func NewGame(dictionaryPath string, wordSize int) Game {
 	dictionary := fetchWords(dictionaryPath, wordSize)
-
 	rand.Seed(time.Now().Unix())
-	targetWord := dictionary[rand.Intn(len(dictionary))]
-	fmt.Printf("Target word is %s\n", targetWord)
-
 	return Game{
 		dictionary,
 		wordSize,
-		targetWord,
+		"",
 	}
+}
+
+func (g *Game) NewTarget() {
+	targetWord := g.dictionary[rand.Intn(len(g.dictionary))]
+	g.targetWord = targetWord
+	fmt.Printf("Target word is %s\n", targetWord)
 }
 
 func fetchWords(filepath string, wordSize int) []string {
