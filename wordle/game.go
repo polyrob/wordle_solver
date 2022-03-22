@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	NO_MATCH        int = 0
-	OUT_OF_POSITION     = 1
-	CORRECT             = 2
+	NO_MATCH = iota
+	OUT_OF_POSITION
+	CORRECT
 )
 
 type Game struct {
@@ -26,18 +26,13 @@ type Game struct {
 
 func NewGame(dictionaryPath string, wordSize int) Game {
 	dictionary := fetchWords(dictionaryPath, wordSize)
+	fmt.Printf("Loaded words from dictionary: %d\n", len(dictionary))
 	rand.Seed(time.Now().Unix())
 	return Game{
 		dictionary,
 		wordSize,
 		"",
 	}
-}
-
-func (g *Game) NewTarget() {
-	targetWord := g.dictionary[rand.Intn(len(g.dictionary))]
-	g.targetWord = targetWord
-	fmt.Printf("Target word is %s\n", targetWord)
 }
 
 func fetchWords(filepath string, wordSize int) []string {
@@ -73,7 +68,17 @@ func isValidWord(word string, wordSize int) bool {
 	return true
 }
 
+func (g *Game) NewTarget() {
+	targetWord := g.dictionary[rand.Intn(len(g.dictionary))]
+	g.targetWord = targetWord
+	fmt.Printf("Target word is %s\n", targetWord)
+}
+
 func (g *Game) CheckGuess(guess string) ([]int, error) {
+	if g.targetWord == "" {
+		return nil, errors.New("no target word")
+	}
+
 	if len(guess) != g.wordSize {
 		return nil, errors.New("guess doesn't match target word length")
 	}

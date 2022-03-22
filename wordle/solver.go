@@ -33,18 +33,19 @@ func (s *Solver) Solve() (string, int, error) {
 		}
 
 		s.lastResult = result
-		fmt.Printf("- result from guess is %v\n", result)
+		fmt.Printf("- result: %v", result)
 		if s.isSolved(result) {
+			fmt.Println("- SOLVED!")
 			return guess, s.guessCounter, nil
 		}
 
 		if s.guessCounter >= 20 {
-			return "", s.guessCounter, errors.New("\nquitting after too many failed attempts\n")
+			return "", s.guessCounter, errors.New("too many failed attempts")
 		}
 
 		words = s.reduceWords(guess, result, words)
+		fmt.Printf("- possible words: %d\n", len(words))
 	}
-
 }
 
 func (s *Solver) getGuess(words []string) string {
